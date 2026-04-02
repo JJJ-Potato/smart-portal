@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스마트 건설 포탈 — 수도권 제2순환선(양평-이천)</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.45);
+      --glass-shadow: rgba(31, 38, 135, 0.08);
+      --glass-hover-bg: rgba(255, 255, 255, 0.45);
+      --text-primary: #1a1a2e;
+      --text-secondary: #4a4a6a;
+      --text-muted: #7a7a9a;
+      --card-radius: 20px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      color: var(--text-primary);
+    }
+
+    /* ── Animated Gradient Background ── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: linear-gradient(135deg,
+        #dbeafe 0%,
+        #c7d7fe 20%,
+        #e0eaff 40%,
+        #bfdbfe 60%,
+        #a5c4f7 80%,
+        #d4e4ff 100%
+      );
+      background-size: 300% 300%;
+      animation: gradientShift 20s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 50% 0%; }
+      50% { background-position: 100% 50%; }
+      75% { background-position: 50% 100%; }
+    }
+
+    /* ── Floating Orbs ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      z-index: -1;
+      animation: orbFloat 15s ease-in-out infinite;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #93b8f7, #6b8cf0);
+      top: -10%; left: -5%;
+      animation-duration: 18s;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #a8c5f7, #7ba3e8);
+      bottom: -8%; right: -5%;
+      animation-duration: 22s;
+      animation-delay: -5s;
+    }
+    .orb-3 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, #b4d0fc, #8db4f0);
+      top: 50%; left: 60%;
+      animation-duration: 16s;
+      animation-delay: -10s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* ── Container ── */
+    .container {
+      width: 100%;
+      max-width: 960px;
+      padding: 60px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 34px;
+      animation: fadeInUp 0.8s ease-out both;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.6);
+      font-size: calc(0.8rem + 1.5pt);
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: calc(2rem + 15pt);
+      font-weight: 800;
+      line-height: 1.3;
+      background: linear-gradient(135deg, #0f1b4d, #1e40af, #3b5fc0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .header h1 span {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: linear-gradient(135deg, #1e3a6e, #2d5aa0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.01em;
+      margin-top: 8px;
+    }
+
+    .header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* ── Glass Card ── */
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 28px 24px;
+      border-radius: var(--card-radius);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        0 8px 32px var(--glass-shadow),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition:
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+      overflow: hidden;
+      animation: fadeInUp 0.7s ease-out both;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border-radius: var(--card-radius);
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.3) 0%,
+        rgba(255,255,255,0) 60%
+      );
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+      background: var(--glass-hover-bg);
+      box-shadow:
+        0 16px 48px rgba(31, 38, 135, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .card:active {
+      transform: translateY(-2px) scale(1.0);
+      transition-duration: 0.1s;
+    }
+
+    /* ── Card Icon ── */
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke-width: 1.8;
+      position: relative;
+      z-index: 1;
+    }
+
+    .icon-bim { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+    .icon-drone { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #fff; }
+    .icon-video { background: linear-gradient(135deg, #fa709a, #fee140); color: #fff; }
+    .icon-cctv { background: linear-gradient(135deg, #a18cd1, #fbc2eb); color: #fff; }
+    .icon-news { background: linear-gradient(135deg, #fccb90, #d57eeb); color: #fff; }
+    .icon-weather { background: linear-gradient(135deg, #89f7fe, #66a6ff); color: #fff; }
+
+    /* ── Card Text ── */
+    .card-title {
+      font-size: calc(1.05rem + 2pt);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    .card-sub {
+      font-size: calc(0.82rem + 2pt);
+      color: var(--text-muted);
+      font-weight: 450;
+    }
+
+    /* ── Card Arrow ── */
+    .card-arrow {
+      position: absolute;
+      top: 24px;
+      right: 20px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .card-arrow svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--text-secondary);
+      stroke-width: 2.5;
+    }
+
+    .card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 56px;
+      text-align: center;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    .footer p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ── Stagger Animations ── */
+    .card:nth-child(1) { animation-delay: 0.10s; }
+    .card:nth-child(2) { animation-delay: 0.17s; }
+    .card:nth-child(3) { animation-delay: 0.24s; }
+    .card:nth-child(4) { animation-delay: 0.31s; }
+    .card:nth-child(5) { animation-delay: 0.38s; }
+    .card:nth-child(6) { animation-delay: 0.45s; }
+
+    /* ── BIM 자식 오버레이 ── */
+    .card-children-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--card-radius);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .card.expanded .card-children-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .card.expanded {
+      transform: none !important;
+    }
+
+    .sub-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      font-size: calc(0.88rem + 1.5pt);
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .sub-card {
+      background: linear-gradient(135deg, rgba(167, 243, 208, 0.65), rgba(110, 231, 183, 0.45));
+    }
+
+    .sub-card:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+    }
+
+    .sub-card:active {
+      transform: translateY(0);
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--card-radius);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .card-overlay.visible {
+      opacity: 1;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .container { padding: 40px 20px 32px; }
+      .header { margin-bottom: 24px; }
+      .header h1 { font-size: calc(1.6rem + 20pt); }
+      .header h1 span { font-size: 1rem; }
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .card { padding: 22px 18px; }
+      .card-icon { width: 42px; height: 42px; border-radius: 12px; margin-bottom: 14px; }
+      .card-icon svg { width: 20px; height: 20px; }
+      .card-title { font-size: calc(0.95rem + 2pt); }
+      .card-arrow { display: none; }
+      .orb { opacity: 0.25; }
+    }
+
+    @media (max-width: 768px) {
+      .card-children-overlay {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        padding: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .card {
+        flex-direction: row;
+        align-items: center;
+        padding: 18px 20px;
+        gap: 14px;
+      }
+      .card-icon { margin-bottom: 0; }
+      .card-text { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">수도권 제2순환선(양평-이천) 건설공사</div>
+      <h1>
+        스마트 건설 포탈
+        <span>현장의 모든 서비스를 하나로 연결합니다.</span>
+      </h1>
+    </header>
+    <!-- Service Grid -->
+    <div class="grid" id="serviceGrid"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>ⓒ한국도로공사 양평이천건설사업단. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // ──────────────────────────────────────────────
+    //  서비스 데이터 — 새 서비스 추가 시 여기만 수정
+    // ──────────────────────────────────────────────
+    const services = [
+      {
+        id: 'bim',
+        title: '시공 BIM',
+        sub: '양방향 커뮤니케이터 접속하기',
+        iconClass: 'icon-bim',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/>
+        </svg>`,
+        children: [
+          { title: '1공구', url: 'http://yi0109.prj-works.com/' },
+          { title: '2공구', url: 'http://yi0209.prj-works.com/' },
+          { title: '3공구', url: 'http://yi0309.prj-works.com/' },
+          { title: '4공구', url: 'http://yi0409.prj-works.com/' },
+        ]
+      },
+      {
+        id: 'drone-sat',
+        title: '드론 위성 측량',
+        sub: '엔젤스윙 바로가기',
+        url: 'https://app.angelswing.io/',
+        iconClass: 'icon-drone',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5a17.92 17.92 0 0 1-8.716-2.247m0 0A8.966 8.966 0 0 1 3 12c0-1.264.26-2.466.733-3.559"/>
+        </svg>`
+      },
+      {
+        id: 'drone-video',
+        title: '드론 항공 영상',
+        sub: "'26년 1분기 촬영분 감상하기",
+        url: 'video.html',
+        iconClass: 'icon-video',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9A2.25 2.25 0 0 0 13.5 5.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"/>
+        </svg>`
+      },
+      {
+        id: 'cctv',
+        title: '노선 CCTV',
+        sub: '실시간 영상 보러가기',
+        url: '#',
+        disabled: true,
+        iconClass: 'icon-cctv',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+        </svg>`
+      },
+      {
+        id: 'news',
+        title: '건설사 뉴스 모니터링',
+        sub: '참여사 동향 살펴보기',
+        url: 'https://news.exroad.life/',
+        iconClass: 'icon-news',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5"/>
+        </svg>`
+      },
+      {
+        id: 'weather',
+        title: '양평-이천 날씨 현황',
+        sub: '지역 기상예보 확인하기',
+        url: 'https://weather.exroad.life/',
+        iconClass: 'icon-weather',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"/>
+        </svg>`
+      }
+    ];
+
+    // ──────────────────────────────────────────────
+    //  렌더링
+    // ──────────────────────────────────────────────
+    const grid = document.getElementById('serviceGrid');
+
+    const arrowSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"/>
+    </svg>`;
+
+    services.forEach(s => {
+      // 자식 카드가 있는 경우 (BIM)
+      if (s.children) {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <div class="card-icon ${s.iconClass}">${s.icon}</div>
+          <div class="card-text">
+            <div class="card-title">${s.title}</div>
+            <div class="card-sub">${s.sub}</div>
+          </div>
+          <div class="card-arrow">${arrowSVG}</div>
+          <div class="card-children-overlay"></div>
+        `;
+        const overlay = div.querySelector('.card-children-overlay');
+        s.children.forEach(c => {
+          const a = document.createElement('a');
+          a.href = c.url;
+          a.target = '_self';
+          a.className = 'sub-card';
+          a.textContent = c.title;
+          a.addEventListener('click', e => e.stopPropagation());
+          overlay.appendChild(a);
+        });
+        div.addEventListener('click', () => {
+          div.classList.toggle('expanded');
+        });
+        grid.appendChild(div);
+        return;
+      }
+
+      // 일반 카드
+      const a = document.createElement('a');
+      a.href = s.disabled ? 'javascript:void(0)' : s.url;
+      a.target = '_self';
+      a.className = 'card';
+      a.innerHTML = `
+        <div class="card-icon ${s.iconClass}">${s.icon}</div>
+        <div class="card-text">
+          <div class="card-title">${s.title}</div>
+          <div class="card-sub">${s.sub}</div>
+        </div>
+        <div class="card-arrow">${arrowSVG}</div>
+      `;
+      if (s.disabled) {
+        const overlay = document.createElement('div');
+        overlay.className = 'card-overlay';
+        overlay.textContent = '현재 준비 중입니다.';
+        a.appendChild(overlay);
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          overlay.classList.add('visible');
+          setTimeout(() => overlay.classList.remove('visible'), 1800);
+        });
+      }
+      grid.appendChild(a);
+    });
+  </script>
+
+</body>
+</html>
